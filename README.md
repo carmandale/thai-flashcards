@@ -1,3 +1,25 @@
+Thai Flashcards — MagicPath UI
+
+Run locally
+
+```bash
+./start.sh
+# or
+PORT=5190 OPEN_BROWSER=0 ./start.sh
+```
+
+Stack
+- React 19 + Vite
+- Tailwind CSS 4
+- Framer Motion
+
+Scripts
+- `npm run dev` — dev server
+- `npm run build` — production build
+- `npm run preview` — preview built app
+
+Notes
+- This repo now uses the redesigned UI (no canvas app). The previous `index.html` has been removed.
 # React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
