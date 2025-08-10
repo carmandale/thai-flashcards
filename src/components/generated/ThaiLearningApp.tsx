@@ -17,7 +17,6 @@ export interface UserProgress {
     wordsLearned: number;
   }>;
   masteredWords: Set<string>;
-  mpid?: string;
 }
 const STORAGE_KEY = 'thai-learning-progress';
 const defaultProgress: UserProgress = {
@@ -142,21 +141,21 @@ export const ThaiLearningApp: React.FC = () => {
     }));
     addXP(10);
   };
-  return <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white" data-magicpath-id="0" data-magicpath-path="ThaiLearningApp.tsx">
+  return <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white">
       {/* Subtle background particles */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none" data-magicpath-id="1" data-magicpath-path="ThaiLearningApp.tsx">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(120,119,198,0.1),transparent_50%)]" data-magicpath-id="2" data-magicpath-path="ThaiLearningApp.tsx" />
-        <div className="absolute top-1/4 left-1/4 w-2 h-2 bg-blue-400/20 rounded-full animate-pulse" data-magicpath-id="3" data-magicpath-path="ThaiLearningApp.tsx" />
-        <div className="absolute top-3/4 right-1/3 w-1 h-1 bg-purple-400/30 rounded-full animate-pulse delay-1000" data-magicpath-id="4" data-magicpath-path="ThaiLearningApp.tsx" />
-        <div className="absolute bottom-1/4 left-2/3 w-1.5 h-1.5 bg-indigo-400/25 rounded-full animate-pulse delay-500" data-magicpath-id="5" data-magicpath-path="ThaiLearningApp.tsx" />
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(120,119,198,0.1),transparent_50%)]" />
+        <div className="absolute top-1/4 left-1/4 w-2 h-2 bg-blue-400/20 rounded-full animate-pulse" />
+        <div className="absolute top-3/4 right-1/3 w-1 h-1 bg-purple-400/30 rounded-full animate-pulse delay-1000" />
+        <div className="absolute bottom-1/4 left-2/3 w-1.5 h-1.5 bg-indigo-400/25 rounded-full animate-pulse delay-500" />
       </div>
 
-      <div className="relative z-10 flex flex-col min-h-screen" data-magicpath-id="6" data-magicpath-path="ThaiLearningApp.tsx">
-        <Header activeTab={activeTab} onTabChange={setActiveTab} progress={progress} onReset={resetProgress} data-magicpath-id="7" data-magicpath-path="ThaiLearningApp.tsx" />
+      <div className="relative z-10 flex flex-col min-h-screen">
+        <Header activeTab={activeTab} onTabChange={setActiveTab} progress={progress} onReset={resetProgress} />
 
-        <main className="flex-1 px-4 py-6 md:px-6 lg:px-8" data-magicpath-id="8" data-magicpath-path="ThaiLearningApp.tsx">
-          <div className="max-w-4xl mx-auto" data-magicpath-id="9" data-magicpath-path="ThaiLearningApp.tsx">
-            <AnimatePresence mode="wait" data-magicpath-id="10" data-magicpath-path="ThaiLearningApp.tsx">
+        <main className="flex-1 px-4 py-6 md:px-6 lg:px-8">
+          <div className="max-w-4xl mx-auto">
+            <AnimatePresence mode="wait">
               <motion.div key={activeTab} initial={{
               opacity: 0,
               y: 20
@@ -168,14 +167,14 @@ export const ThaiLearningApp: React.FC = () => {
               y: -20
             }} transition={{
               duration: 0.15
-            }} data-magicpath-id="11" data-magicpath-path="ThaiLearningApp.tsx">
-                {activeTab === 'flashcards' && <FlashcardsView onWordMastered={markWordMastered} masteredWords={progress.masteredWords} data-magicpath-id="12" data-magicpath-path="ThaiLearningApp.tsx" />}
-                {activeTab === 'quiz' && <QuizView onCorrectAnswer={() => addXP(5)} masteredWords={progress.masteredWords} data-magicpath-id="13" data-magicpath-path="ThaiLearningApp.tsx" />}
-                {activeTab === 'game' && <div className="text-center py-16" data-magicpath-id="14" data-magicpath-path="ThaiLearningApp.tsx">
-                    <h2 className="text-2xl font-bold mb-4" data-magicpath-id="15" data-magicpath-path="ThaiLearningApp.tsx">Mouse & Cheese</h2>
-                    <p className="text-slate-400 mb-8" data-magicpath-id="16" data-magicpath-path="ThaiLearningApp.tsx">Mini-game coming soon!</p>
-                    <div className="w-64 h-40 mx-auto bg-slate-800/50 rounded-lg border border-slate-700 flex items-center justify-center" data-magicpath-id="17" data-magicpath-path="ThaiLearningApp.tsx">
-                      <span className="text-slate-500" data-magicpath-id="18" data-magicpath-path="ThaiLearningApp.tsx">Game UI Shell</span>
+            }}>
+                {activeTab === 'flashcards' && <FlashcardsView onWordMastered={markWordMastered} masteredWords={progress.masteredWords} />}
+                {activeTab === 'quiz' && <QuizView onCorrectAnswer={() => addXP(5)} masteredWords={progress.masteredWords} />}
+                {activeTab === 'game' && <div className="text-center py-16">
+                    <h2 className="text-2xl font-bold mb-4">Mouse & Cheese</h2>
+                    <p className="text-slate-400 mb-8">Mini-game coming soon!</p>
+                    <div className="w-64 h-40 mx-auto bg-slate-800/50 rounded-lg border border-slate-700 flex items-center justify-center">
+                      <span className="text-slate-500">Game UI Shell</span>
                     </div>
                   </div>}
               </motion.div>
@@ -183,7 +182,7 @@ export const ThaiLearningApp: React.FC = () => {
           </div>
         </main>
 
-        <Footer wordsLearnedToday={progress.wordsLearnedToday} data-magicpath-id="19" data-magicpath-path="ThaiLearningApp.tsx" />
+        <Footer wordsLearnedToday={progress.wordsLearnedToday} />
       </div>
     </div>;
 };
