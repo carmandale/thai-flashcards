@@ -151,7 +151,7 @@ export const FlashcardsView: React.FC<FlashcardsViewProps> = ({
 
       {/* Flashcard */}
       <div className="relative mb-8">
-        <AnimatePresence mode="wait">
+        <AnimatePresence mode="wait" initial={false}>
           <motion.div key={`${currentCard.id}-${isRevealed}`} initial={{
           rotateY: isFlipping ? -90 : 0,
           opacity: isFlipping ? 0 : 1
@@ -184,8 +184,8 @@ export const FlashcardsView: React.FC<FlashcardsViewProps> = ({
                 {currentCard.transliteration}
               </p>
 
-              <AnimatePresence>
-                {isRevealed && <motion.div initial={{
+              <AnimatePresence initial={false}>
+                {isRevealed ? <motion.div key="eng" initial={{
                 opacity: 0,
                 y: 20
               }} animate={{
@@ -197,12 +197,8 @@ export const FlashcardsView: React.FC<FlashcardsViewProps> = ({
                     <p className="text-2xl md:text-3xl font-semibold text-blue-300 mt-6">
                       {currentCard.english}
                     </p>
-                  </motion.div>}
+                  </motion.div> : <motion.p key="hint" initial={{opacity:0}} animate={{opacity:1}} className="text-slate-500 text-sm mt-4">Click to reveal translation</motion.p>}
               </AnimatePresence>
-
-              {!isRevealed && <p className="text-slate-500 text-sm mt-4">
-                  Click to reveal translation
-                </p>}
             </div>
           </motion.div>
         </AnimatePresence>
