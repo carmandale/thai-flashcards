@@ -8,6 +8,13 @@ Run locally
 PORT=5190 OPEN_BROWSER=0 ./start.sh
 ```
 
+Deploy (GitHub Pages)
+
+1) GitHub repo: `carmandale/thai-flashcards`
+2) Pages settings: Source = GitHub Actions
+3) Workflow: `.github/workflows/pages.yml` (already added)
+4) The app will be available at `https://carmandale.github.io/thai-flashcards/`
+
 Stack
 - React 19 + Vite
 - Tailwind CSS 4
