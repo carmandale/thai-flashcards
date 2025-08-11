@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Volume2, Eye, Check, SkipForward } from 'lucide-react';
 import { speakThai as speakThaiUtil } from '@/lib/tts';
+import { ensureAudioUnlocked } from '@/lib/audioUnlock';
 interface FlashcardsViewProps {
   onWordMastered: (word: string) => void;
   masteredWords: Set<string>;
@@ -77,7 +78,7 @@ export const FlashcardsView: React.FC<FlashcardsViewProps> = ({
   useEffect(() => {
     setIsRevealed(false);
   }, [currentIndex]);
-  const speakThai = () => { try { speakThaiUtil(currentCard.thai, 0.9); } catch {} };
+  const speakThai = () => { try { ensureAudioUnlocked(); speakThaiUtil(currentCard.thai, 0.9); } catch {} };
   const handleReveal = () => {
     if (!isRevealed) {
       setIsFlipping(true);
