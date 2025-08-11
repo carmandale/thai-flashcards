@@ -48,18 +48,34 @@ function iosResumeWorkaround() {
   window.setTimeout(() => window.clearInterval(id), 2000);
 }
 
-export async function speakThai(text: string, rate = 0.9) {
+export function speakThai(text: string, rate = 0.9) {
   if (typeof window === 'undefined' || !('speechSynthesis' in window)) return;
   const synth = window.speechSynthesis;
   iosResumeWorkaround();
-  const voices = await loadVoicesOnce().catch(() => [] as SpeechSynthesisVoice[]);
-  const voice = pickThaiVoice(voices);
+  // Attempt immediate speak using currently available voices to preserve user gesture
+  const immediate = synth.getVoices();
+  const immediateVoice = pickThaiVoice(immediate);
   try { synth.cancel(); } catch {}
-  const u = new SpeechSynthesisUtterance(text);
-  if (voice) u.voice = voice;
-  if (voice?.lang) u.lang = voice.lang;
-  u.rate = rate;
-  synth.speak(u);
+  const utter = new SpeechSynthesisUtterance(text);
+  if (immediateVoice) utter.voice = immediateVoice;
+  if (immediateVoice?.lang) utter.lang = immediateVoice.lang;
+  utter.rate = rate;
+  let started = false;
+  utter.onstart = () => { started = true; };
+  synth.speak(utter);
+  // If iOS ignored the first speak because voices weren't ready, retry shortly with loaded voices
+  setTimeout(() => {
+    if (started) return;
+    loadVoicesOnce().then((v) => {
+      const voice = pickThaiVoice(v);
+      try { synth.cancel(); } catch {}
+      const u = new SpeechSynthesisUtterance(text);
+      if (voice) u.voice = voice;
+      if (voice?.lang) u.lang = voice.lang;
+      u.rate = rate;
+      synth.speak(u);
+    }).catch(() => {});
+  }, 350);
 }
 
 export function isTTSSupported() {

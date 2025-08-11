@@ -24,3 +24,12 @@ import App from './App.tsx';
 createRoot(document.getElementById('root')!).render(<StrictMode>
     <App />
   </StrictMode>);
+
+// Prime iOS Safari audio/TTS on first gesture
+window.addEventListener('touchend', () => {
+  try { window.speechSynthesis?.resume(); } catch {}
+}, { once: true, passive: true });
+
+window.addEventListener('click', () => {
+  try { window.speechSynthesis?.resume(); } catch {}
+}, { once: true });
