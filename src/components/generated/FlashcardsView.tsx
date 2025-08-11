@@ -171,11 +171,11 @@ export const FlashcardsView: React.FC<FlashcardsViewProps> = ({
               </div>}
 
             <div className="space-y-4">
-              <h2 className="text-4xl md:text-5xl font-bold text-white mb-2">
+              <h2 className="text-4xl md:text-5xl font-bold text-white mb-2 no-select" aria-label="Thai word">
                 {currentCard.thai}
               </h2>
               
-              <p className="text-lg md:text-xl text-slate-300 font-medium">
+              <p className="text-lg md:text-xl text-slate-300 font-medium no-select" aria-label="Transliteration">
                 {currentCard.transliteration}
               </p>
 
