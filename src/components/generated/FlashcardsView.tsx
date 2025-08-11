@@ -145,7 +145,7 @@ export const FlashcardsView: React.FC<FlashcardsViewProps> = ({
       </div>
 
       {/* Flashcard */}
-      <div className="relative mb-8">
+      <div className="relative mb-8 no-select">
         <AnimatePresence mode="wait" initial={false}>
           <motion.div key={`${currentCard.id}-${isRevealed}`} initial={{
           rotateY: isFlipping ? -90 : 0,

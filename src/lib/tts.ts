@@ -58,8 +58,9 @@ export function speakThai(text: string, rate = 0.9) {
   try { synth.cancel(); } catch {}
   const utter = new SpeechSynthesisUtterance(text);
   if (immediateVoice) utter.voice = immediateVoice;
-  if (immediateVoice?.lang) utter.lang = immediateVoice.lang;
+  utter.lang = immediateVoice?.lang || 'th-TH';
   utter.rate = rate;
+  utter.volume = 1;
   let started = false;
   utter.onstart = () => { started = true; };
   synth.speak(utter);
@@ -71,8 +72,9 @@ export function speakThai(text: string, rate = 0.9) {
       try { synth.cancel(); } catch {}
       const u = new SpeechSynthesisUtterance(text);
       if (voice) u.voice = voice;
-      if (voice?.lang) u.lang = voice.lang;
+      u.lang = voice?.lang || 'th-TH';
       u.rate = rate;
+      u.volume = 1;
       synth.speak(u);
     }).catch(() => {});
   }, 350);

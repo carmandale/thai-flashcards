@@ -141,3 +141,10 @@ body {
     padding: 0;
   }
 }
+
+/* Prevent accidental text selection on mobile in interactive areas */
+.no-select {
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
