@@ -91,7 +91,7 @@ export function useWordProgression(masteredWords: Set<string>) {
     setState(prev => {
       // Load progression state from localStorage
       const savedState = localStorage.getItem(STORAGE_KEY);
-      let loadedState = null;
+      let loadedState: Partial<WordProgressionState> | null = null;
       
       if (savedState) {
         try {
