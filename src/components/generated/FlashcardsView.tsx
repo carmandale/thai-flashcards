@@ -41,11 +41,12 @@ export const FlashcardsView: React.FC<FlashcardsViewProps> = ({
     if (!currentCard || isPlaying) return;
     try { 
       ensureAudioUnlocked();
-      setIsPlaying(true);
-      speakThaiUtil(currentCard.thai, 0.9);
-      // Estimate duration based on text length (rough approximation)
-      const duration = Math.max(1000, currentCard.thai.length * 200);
-      setTimeout(() => setIsPlaying(false), duration);
+      speakThaiUtil(
+        currentCard.thai, 
+        0.9,
+        () => setIsPlaying(true),   // onStart
+        () => setIsPlaying(false)   // onEnd
+      );
     } catch {
       setIsPlaying(false);
     } 
