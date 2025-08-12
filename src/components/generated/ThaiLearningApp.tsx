@@ -155,7 +155,7 @@ export const ThaiLearningApp: React.FC = () => {
     });
   };
   const resetProgress = () => {
-    const userName = currentUser === 'user1' ? 'Dale' : 'Wife';
+    const userName = currentUser === 'user1' ? 'Dale' : 'Erika';
     if (window.confirm(`Are you sure you want to reset ${userName}'s progress? This cannot be undone.`)) {
       setProgress(defaultProgress);
       localStorage.removeItem(`${STORAGE_KEY_PREFIX}-${currentUser}`);
@@ -180,13 +180,29 @@ export const ThaiLearningApp: React.FC = () => {
       <div className="relative z-10 flex flex-col min-h-screen">
         <Header activeTab={activeTab} onTabChange={setActiveTab} progress={progress} onReset={resetProgress} />
         
-        {/* Simple user indicator - tap to switch */}
-        <button 
-          onClick={() => setCurrentUser(currentUser === 'user1' ? 'user2' : 'user1')}
-          className="mx-auto mt-2 px-3 py-1 text-xs rounded-full bg-slate-800/50 text-slate-400"
-        >
-          {currentUser === 'user1' ? '👤 Dale' : '👥 Wife'}
-        </button>
+        {/* User profile display with streak */}
+        <div className="flex flex-col items-center mt-3 mb-2">
+          <button 
+            onClick={() => setCurrentUser(currentUser === 'user1' ? 'user2' : 'user1')}
+            className="px-4 py-2 text-lg font-semibold rounded-xl bg-slate-800/50 text-white flex items-center gap-2"
+          >
+            {currentUser === 'user1' ? '🚀 Dale' : '🌟 Erika'}
+          </button>
+          <div className="flex items-center gap-4 mt-2">
+            <div className="flex items-center gap-1">
+              <span className="text-2xl">🔥</span>
+              <span className="text-sm font-bold text-orange-400">{progress.streak} day{progress.streak !== 1 ? 's' : ''}</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <span className="text-2xl">⭐</span>
+              <span className="text-sm font-bold text-yellow-400">{progress.xp} XP</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <span className="text-2xl">🎯</span>
+              <span className="text-sm font-bold text-green-400">{progress.masteredWords.size}</span>
+            </div>
+          </div>
+        </div>
 
         <main className="flex-1 px-4 py-4 overflow-hidden">
           <div className="h-full max-w-4xl mx-auto">
