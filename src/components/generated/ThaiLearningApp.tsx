@@ -4,7 +4,7 @@ import { Header } from './Header';
 import { FlashcardsView } from './FlashcardsView';
 import { QuizView } from './QuizView';
 import { Footer } from './Footer';
-export type Tab = 'flashcards' | 'quiz' | 'game';
+export type Tab = 'flashcards' | 'quiz';
 export interface UserProgress {
   xp: number;
   streak: number;
@@ -85,9 +85,6 @@ export const ThaiLearningApp: React.FC = () => {
           break;
         case '2':
           setActiveTab('quiz');
-          break;
-        case '3':
-          setActiveTab('game');
           break;
       }
     };
@@ -170,13 +167,6 @@ export const ThaiLearningApp: React.FC = () => {
             }}>
                 {activeTab === 'flashcards' && <FlashcardsView onWordMastered={markWordMastered} masteredWords={progress.masteredWords} />}
                 {activeTab === 'quiz' && <QuizView onCorrectAnswer={() => addXP(5)} masteredWords={progress.masteredWords} />}
-                {activeTab === 'game' && <div className="text-center py-16">
-                    <h2 className="text-2xl font-bold mb-4">Mouse & Cheese</h2>
-                    <p className="text-slate-400 mb-8">Mini-game coming soon!</p>
-                    <div className="w-64 h-40 mx-auto bg-slate-800/50 rounded-lg border border-slate-700 flex items-center justify-center">
-                      <span className="text-slate-500">Game UI Shell</span>
-                    </div>
-                  </div>}
               </motion.div>
             </AnimatePresence>
           </div>
