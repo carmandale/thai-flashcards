@@ -41,13 +41,25 @@ export const FlashcardsView: React.FC<FlashcardsViewProps> = ({
     if (!currentCard || isPlaying) return;
     try { 
       ensureAudioUnlocked();
+      
+      // Debug: check available voices
+      const voices = window.speechSynthesis.getVoices();
+      console.log('Available voices:', voices.length, voices.map(v => v.lang + ' - ' + v.name));
+      
       speakThaiUtil(
         currentCard.thai, 
         0.9,
-        () => setIsPlaying(true),   // onStart
-        () => setIsPlaying(false)   // onEnd
+        () => {
+          console.log('TTS started successfully');
+          setIsPlaying(true);
+        },   // onStart
+        () => {
+          console.log('TTS ended');
+          setIsPlaying(false);
+        }   // onEnd
       );
-    } catch {
+    } catch (error) {
+      console.error('TTS error:', error);
       setIsPlaying(false);
     } 
   };
