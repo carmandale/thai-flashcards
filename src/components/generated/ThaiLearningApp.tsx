@@ -4,7 +4,8 @@ import { Header } from './Header';
 import { FlashcardsView } from './FlashcardsView';
 import { QuizView } from './QuizView';
 import { Footer } from './Footer';
-import { UserSelector, UserProfile } from '../UserSelector';
+
+type UserProfile = 'user1' | 'user2';
 export type Tab = 'flashcards' | 'quiz';
 export interface UserProgress {
   xp: number;
