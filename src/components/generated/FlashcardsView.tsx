@@ -281,7 +281,13 @@ export const FlashcardsView: React.FC<FlashcardsViewProps> = ({
             <span className="text-xs opacity-75 hidden sm:inline">(Space)</span>
           </button>}
 
-        <button onClick={handleNextCard} className="flex items-center justify-center gap-2 px-6 py-3 bg-slate-600 hover:bg-slate-700 text-white rounded-lg font-medium transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-slate-400/50 focus:ring-offset-2 focus:ring-offset-slate-900 min-h-[48px]" aria-label="Skip to next word (Press N or Right Arrow)">
+        <button 
+          onClick={() => handleButtonPress('next', handleNextCard)} 
+          className={`flex items-center justify-center gap-2 px-6 py-3 bg-slate-600 hover:bg-slate-700 active:bg-slate-800 text-white rounded-lg font-medium transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-slate-400/50 focus:ring-offset-2 focus:ring-offset-slate-900 min-h-[48px] ${
+            pressedButton === 'next' ? 'scale-95 shadow-sm' : 'scale-100 shadow-md'
+          } transform`} 
+          aria-label="Skip to next word (Press N or Right Arrow)"
+        >
           <SkipForward className="w-5 h-5" />
           <span>Next</span>
           <span className="text-xs opacity-75 hidden sm:inline">(N)</span>
