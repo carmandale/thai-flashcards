@@ -4,6 +4,7 @@ import { Header } from './Header';
 import { FlashcardsView } from './FlashcardsView';
 import { QuizView } from './QuizView';
 import { Footer } from './Footer';
+import { UserSelector, UserProfile } from '../UserSelector';
 export type Tab = 'flashcards' | 'quiz';
 export interface UserProgress {
   xp: number;
@@ -18,7 +19,7 @@ export interface UserProgress {
   }>;
   masteredWords: Set<string>;
 }
-const STORAGE_KEY = 'thai-learning-progress';
+const STORAGE_KEY_PREFIX = 'thai-learning-progress';
 const defaultProgress: UserProgress = {
   xp: 0,
   streak: 0,
@@ -30,7 +31,13 @@ const defaultProgress: UserProgress = {
 };
 export const ThaiLearningApp: React.FC = () => {
   const [activeTab, setActiveTab] = useState<Tab>('flashcards');
-  const [progress, setProgress] = useState<UserProgress>(defaultProgress);
+  const [currentUser, setCurrentUser] = useState<UserProfile>('user1');
+  const [user1Progress, setUser1Progress] = useState<UserProgress>(defaultProgress);
+  const [user2Progress, setUser2Progress] = useState<UserProgress>(defaultProgress);
+  
+  // Current user's progress
+  const progress = currentUser === 'user1' ? user1Progress : user2Progress;
+  const setProgress = currentUser === 'user1' ? setUser1Progress : setUser2Progress;
 
   // Load progress from localStorage
   useEffect(() => {
