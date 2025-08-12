@@ -245,10 +245,19 @@ export const FlashcardsView: React.FC<FlashcardsViewProps> = ({
 
       {/* Action buttons */}
       <div className="flex flex-col sm:flex-row gap-3 justify-center">
-        <button onClick={speakThai} className="flex items-center justify-center gap-2 px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-medium transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-purple-400/50 focus:ring-offset-2 focus:ring-offset-slate-900 min-h-[48px]" aria-label="Hear Thai pronunciation (Press S)">
-          <Volume2 className="w-5 h-5" />
-          <span>Hear Thai</span>
-          <span className="text-xs opacity-75 hidden sm:inline">(S)</span>
+        <button 
+          onClick={speakThai} 
+          disabled={isPlaying}
+          className={`flex items-center justify-center gap-2 px-6 py-3 ${
+            isPlaying 
+              ? 'bg-purple-500 animate-pulse' 
+              : 'bg-purple-600 hover:bg-purple-700'
+          } text-white rounded-lg font-medium transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-purple-400/50 focus:ring-offset-2 focus:ring-offset-slate-900 min-h-[48px] disabled:cursor-not-allowed`}
+          aria-label={isPlaying ? "Playing audio..." : "Hear Thai pronunciation (Press S)"}
+        >
+          <Volume2 className={`w-5 h-5 ${isPlaying ? 'animate-pulse' : ''}`} />
+          <span>{isPlaying ? 'Playing...' : 'Hear Thai'}</span>
+          {!isPlaying && <span className="text-xs opacity-75 hidden sm:inline">(S)</span>}
         </button>
 
         {!isRevealed ? <button onClick={handleReveal} className="flex items-center justify-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-blue-400/50 focus:ring-offset-2 focus:ring-offset-slate-900 min-h-[48px]" aria-label="Reveal translation (Press Space or Enter)">
