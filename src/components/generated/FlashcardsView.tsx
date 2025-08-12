@@ -16,6 +16,7 @@ export const FlashcardsView: React.FC<FlashcardsViewProps> = ({
   const [isFlipping, setIsFlipping] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [debugInfo, setDebugInfo] = useState('');
   
   const {
     currentWord,
