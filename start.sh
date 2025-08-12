@@ -1,28 +1,52 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Start the Thai Flashcards UI (Vite preview)
-# - Installs deps if needed
-# - Builds the app
-# - Runs vite preview on an available port
-# Env:
-#   PORT (default 4173), HOST (default 127.0.0.1), OPEN_BROWSER (1 default)
+# Development Startup Script for Thai Night Market Learning App
+# Agent OS configured to use Yarn + port 3000 for development
+# For production preview, use: ./start.sh
+# For development: yarn dev
 
 ROOT_DIR="$(cd "$(dirname "$0")" && pwd)"
-PORT="${PORT:-4173}"
+MODE="${MODE:-preview}"
+PORT="${PORT:-3000}"
 HOST="${HOST:-127.0.0.1}"
 OPEN_BROWSER="${OPEN_BROWSER:-1}"
 
 cd "$ROOT_DIR"
 
-if ! command -v node >/dev/null 2>&1 || ! command -v npm >/dev/null 2>&1; then
-  echo "❌ Node.js and npm are required." >&2
+# Check for required tools
+if ! command -v node >/dev/null 2>&1; then
+  echo "❌ Node.js is required." >&2
   exit 1
 fi
 
-echo "🛠️ Installing dependencies (with peer fallback)..."
-if ! npm ci --silent; then
-  npm install --legacy-peer-deps --silent
+if ! command -v yarn >/dev/null 2>&1; then
+  echo "⚠️  Yarn not found. Install with: npm install -g yarn" >&2
+  echo "   Falling back to npm..." >&2
+  USE_NPM=true
+else
+  USE_NPM=false
+fi
+
+# Install dependencies with preferred package manager
+echo "🛠️ Installing dependencies..."
+if [ "$USE_NPM" = true ]; then
+  if ! npm ci --silent; then
+    npm install --legacy-peer-deps --silent
+  fi
+else
+  yarn install --silent
+fi
+
+# Development vs Preview mode
+if [ "$MODE" = "dev" ]; then
+  echo "🚀 Starting development server on port $PORT..."
+  if [ "$USE_NPM" = true ]; then
+    PORT=$PORT npm run dev
+  else
+    PORT=$PORT yarn dev
+  fi
+  exit 0
 fi
 
 echo "🛠️ Building app..."
