@@ -259,7 +259,13 @@ export const FlashcardsView: React.FC<FlashcardsViewProps> = ({
           <span className="text-xs opacity-75 hidden sm:inline">(S)</span>
         </button>
 
-        {!isRevealed ? <button onClick={handleReveal} className="flex items-center justify-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-blue-400/50 focus:ring-offset-2 focus:ring-offset-slate-900 min-h-[48px]" aria-label="Reveal translation (Press Space or Enter)">
+        {!isRevealed ? <button 
+          onClick={() => handleButtonPress('reveal', handleReveal)} 
+          className={`flex items-center justify-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white rounded-lg font-medium transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-blue-400/50 focus:ring-offset-2 focus:ring-offset-slate-900 min-h-[48px] ${
+            pressedButton === 'reveal' ? 'scale-95 shadow-sm' : 'scale-100 shadow-md'
+          } transform`} 
+          aria-label="Reveal translation (Press Space or Enter)"
+        >
             <Eye className="w-5 h-5" />
             <span>Reveal</span>
             <span className="text-xs opacity-75 hidden sm:inline">(Space)</span>
