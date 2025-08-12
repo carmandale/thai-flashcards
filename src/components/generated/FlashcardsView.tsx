@@ -269,7 +269,13 @@ export const FlashcardsView: React.FC<FlashcardsViewProps> = ({
             <Eye className="w-5 h-5" />
             <span>Reveal</span>
             <span className="text-xs opacity-75 hidden sm:inline">(Space)</span>
-          </button> : <button onClick={handleKnowIt} className="flex items-center justify-center gap-2 px-6 py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-green-400/50 focus:ring-offset-2 focus:ring-offset-slate-900 min-h-[48px]" aria-label="Mark as known (Press Space or Enter)">
+          </button> : <button 
+          onClick={() => handleButtonPress('know', handleKnowIt)} 
+          className={`flex items-center justify-center gap-2 px-6 py-3 bg-green-600 hover:bg-green-700 active:bg-green-800 text-white rounded-lg font-medium transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-green-400/50 focus:ring-offset-2 focus:ring-offset-slate-900 min-h-[48px] ${
+            pressedButton === 'know' ? 'scale-95 shadow-sm' : 'scale-100 shadow-md'
+          } transform`} 
+          aria-label="Mark as known (Press Space or Enter)"
+        >
             <Check className="w-5 h-5" />
             <span>Know it ✓</span>
             <span className="text-xs opacity-75 hidden sm:inline">(Space)</span>
