@@ -141,10 +141,6 @@ export const FlashcardsView: React.FC<FlashcardsViewProps> = ({
             <div className="absolute top-0 left-0 h-full w-full bg-white/10 animate-pulse" />
           )}
         </div>
-        <div className="flex justify-between text-xs text-slate-500 mt-1">
-          <span>{progressStats.seenWords} seen</span>
-          <span>{progressStats.unseenWords} remaining</span>
-        </div>
       </div>
 
       {/* Settings Panel */}
