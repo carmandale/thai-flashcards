@@ -131,7 +131,7 @@ export const FlashcardsView: React.FC<FlashcardsViewProps> = ({
         <div className="flex items-center gap-3 text-sm text-slate-400 mb-2">
           <span>{progressStats.seenWords} seen</span>
           <span>•</span>
-          <span className="text-slate-300">{progressStats.remainingWords} remaining</span>
+          <span className="text-slate-300">{progressStats.unseenWords} remaining</span>
         </div>
         <div className="w-full bg-slate-800 rounded-full h-3 relative overflow-hidden">
           <div className="bg-gradient-to-r from-blue-500 to-purple-500 h-3 rounded-full transition-all duration-300" style={{
