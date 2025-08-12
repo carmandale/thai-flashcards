@@ -42,8 +42,8 @@ export function useWordProgression(masteredWords: Set<string>) {
     currentWord: null,
     currentIndex: 0,
     totalWords: 0,
-    seenWords: new Set(),
-    masteredWords: new Set(),
+    seenWords: new Set<string>(),
+    masteredWords: new Set<string>(),
     availableWords: [],
     completedCycle: false,
   });
