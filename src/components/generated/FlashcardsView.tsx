@@ -45,22 +45,24 @@ export const FlashcardsView: React.FC<FlashcardsViewProps> = ({
       
       // Debug: check available voices
       const voices = window.speechSynthesis.getVoices();
-      console.log('Available voices:', voices.length, voices.map(v => v.lang + ' - ' + v.name));
+      const thaiVoices = voices.filter(v => v.lang?.toLowerCase().startsWith('th'));
+      setDebugInfo(`Voices: ${voices.length} total, ${thaiVoices.length} Thai. Attempting TTS...`);
       
       speakThaiUtil(
         currentCard.thai, 
         0.9,
         () => {
-          console.log('TTS started successfully');
+          setDebugInfo('✅ TTS Started!');
           setIsPlaying(true);
         },   // onStart
         () => {
-          console.log('TTS ended');
+          setDebugInfo('TTS Ended');
           setIsPlaying(false);
+          setTimeout(() => setDebugInfo(''), 2000); // Clear after 2s
         }   // onEnd
       );
     } catch (error) {
-      console.error('TTS error:', error);
+      setDebugInfo(`❌ Error: ${error.message}`);
       setIsPlaying(false);
     } 
   };
