@@ -1,6 +1,4 @@
 import React from 'react';
-import { motion } from 'framer-motion';
-import { RotateCcw, Target, Flame, Calendar } from 'lucide-react';
 import type { Tab, UserProgress } from './ThaiLearningApp';
 interface HeaderProps {
   activeTab: Tab;
