@@ -179,6 +179,14 @@ export const ThaiLearningApp: React.FC = () => {
 
       <div className="relative z-10 flex flex-col min-h-screen">
         <Header activeTab={activeTab} onTabChange={setActiveTab} progress={progress} onReset={resetProgress} />
+        
+        {/* Simple user indicator - tap to switch */}
+        <button 
+          onClick={() => setCurrentUser(currentUser === 'user1' ? 'user2' : 'user1')}
+          className="mx-auto mt-2 px-3 py-1 text-xs rounded-full bg-slate-800/50 text-slate-400"
+        >
+          {currentUser === 'user1' ? '👤 Dale' : '👥 Wife'}
+        </button>
 
         <main className="flex-1 px-4 py-4 overflow-hidden">
           <div className="h-full max-w-4xl mx-auto">
