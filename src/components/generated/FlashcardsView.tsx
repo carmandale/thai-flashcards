@@ -236,13 +236,6 @@ export const FlashcardsView: React.FC<FlashcardsViewProps> = ({
         </AnimatePresence>
       </div>
 
-      {/* Debug info */}
-      {debugInfo && (
-        <div className="mb-4 p-3 bg-yellow-900/50 border border-yellow-600/50 rounded-lg text-center">
-          <p className="text-yellow-200 text-sm font-mono">{debugInfo}</p>
-        </div>
-      )}
-
       {/* Action buttons */}
       <div className="flex flex-col sm:flex-row gap-3 justify-center">
         <button 
