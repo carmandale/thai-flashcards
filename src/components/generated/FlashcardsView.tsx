@@ -36,6 +36,13 @@ export const FlashcardsView: React.FC<FlashcardsViewProps> = ({
   useEffect(() => {
     setIsRevealed(false);
   }, [currentCard?.id]);
+
+  // Button press animation helper
+  const handleButtonPress = (buttonId: string, action: () => void) => {
+    setPressedButton(buttonId);
+    setTimeout(() => setPressedButton(null), 150);
+    action();
+  };
   
   const speakThai = () => { 
     if (!currentCard) return;
