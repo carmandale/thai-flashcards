@@ -30,7 +30,7 @@ The following features have been implemented:
 
 ### Must-Have Features
 
-- [ ] **Remove Game Placeholder** - Clean up development artifacts and unused components `S`
+- [ ] **Remove Game Placeholder** - Remove "Mouse & Cheese" game tab and clean up unused components `S`
 - [ ] **Enhanced Touch Interactions** - Improved gestures and mobile-specific interactions `M`
 - [ ] **Offline Mode Foundation** - Basic PWA setup for offline vocabulary access `L`
 - [ ] **Mobile Audio Optimization** - Enhanced TTS reliability on iOS and Android `M`
