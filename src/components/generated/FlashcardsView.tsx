@@ -65,8 +65,7 @@ export const FlashcardsView: React.FC<FlashcardsViewProps> = ({
     if (!isCurrentMastered) {
       onWordMastered(currentCard.id);
     }
-    markCurrentWordSeen();
-    nextWord();
+    nextWord(); // nextWord() already handles marking current word as seen
   };
   
   const handleNextCard = () => {
