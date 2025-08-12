@@ -229,7 +229,7 @@ export function useWordProgression(masteredWords: Set<string>) {
     setState(prev => ({
       ...prev,
       currentIndex: 0,
-      seenWords: new Set(),
+      seenWords: new Set<string>(),
       completedCycle: false,
       currentWord: prev.availableWords[0] || null,
     }));
