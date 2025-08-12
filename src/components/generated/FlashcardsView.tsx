@@ -39,7 +39,15 @@ export const FlashcardsView: React.FC<FlashcardsViewProps> = ({
   const speakThai = () => { 
     if (!currentCard) return;
     try { 
-      ensureAudioUnlocked(); 
+      // Aggressive mobile audio unlock in user gesture context
+      ensureAudioUnlocked();
+      
+      // Additional iOS-specific unlocks in user gesture
+      if (window.speechSynthesis) {
+        window.speechSynthesis.resume();
+        window.speechSynthesis.cancel(); // Clear any pending speech
+      }
+      
       speakThaiUtil(currentCard.thai, 0.9); 
     } catch {} 
   };
