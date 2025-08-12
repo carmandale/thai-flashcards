@@ -38,17 +38,30 @@ export const FlashcardsView: React.FC<FlashcardsViewProps> = ({
   
   const speakThai = () => { 
     if (!currentCard) return;
-    try { 
-      // Aggressive mobile audio unlock in user gesture context
+    
+    // Direct implementation within user gesture for iOS compatibility
+    try {
       ensureAudioUnlocked();
       
-      // Additional iOS-specific unlocks in user gesture
-      if (window.speechSynthesis) {
-        window.speechSynthesis.resume();
-        window.speechSynthesis.cancel(); // Clear any pending speech
-      }
+      const synth = window.speechSynthesis;
+      if (!synth) return;
       
-      speakThaiUtil(currentCard.thai, 0.9); 
+      // Aggressive iOS unlock
+      synth.resume();
+      synth.cancel();
+      
+      // Create utterance directly in user gesture
+      const utterance = new SpeechSynthesisUtterance(currentCard.thai);
+      utterance.lang = 'th-TH';
+      utterance.rate = 0.9;
+      utterance.volume = 1;
+      
+      // Try to find Thai voice
+      const voices = synth.getVoices();
+      const thaiVoice = voices.find(v => v.lang?.toLowerCase().startsWith('th'));
+      if (thaiVoice) utterance.voice = thaiVoice;
+      
+      synth.speak(utterance);
     } catch {} 
   };
   const handleReveal = () => {
