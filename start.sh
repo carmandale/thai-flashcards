@@ -49,8 +49,13 @@ if [ "$MODE" = "dev" ]; then
   exit 0
 fi
 
+# Production preview mode
 echo "🛠️ Building app..."
-npm run build --silent
+if [ "$USE_NPM" = true ]; then
+  npm run build --silent
+else
+  yarn build --silent
+fi
 
 is_port_free() {
   local port="$1"
