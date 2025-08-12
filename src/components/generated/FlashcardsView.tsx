@@ -1,84 +1,48 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Volume2, Eye, Check, SkipForward } from 'lucide-react';
+import { Volume2, Eye, Check, SkipForward, Settings } from 'lucide-react';
 import { speakThai as speakThaiUtil } from '@/lib/tts';
 import { ensureAudioUnlocked } from '@/lib/audioUnlock';
+import { useWordProgression } from '@/hooks/useWordProgression';
 interface FlashcardsViewProps {
   onWordMastered: (word: string) => void;
   masteredWords: Set<string>;
 }
-interface Flashcard {
-  id: string;
-  thai: string;
-  transliteration: string;
-  english: string;
-}
-const flashcards: Flashcard[] = [{
-  id: '1',
-  thai: 'สวัสดี',
-  transliteration: 'sà-wàt-dii',
-  english: 'Hello'
-}, {
-  id: '2',
-  thai: 'ขอบคุณ',
-  transliteration: 'kɔ̀ɔp-kun',
-  english: 'Thank you'
-}, {
-  id: '3',
-  thai: 'ขอโทษ',
-  transliteration: 'kɔ̌ɔ-tôot',
-  english: 'Sorry'
-}, {
-  id: '4',
-  thai: 'ไม่เป็นไร',
-  transliteration: 'mâi-pen-rai',
-  english: 'No problem'
-}, {
-  id: '5',
-  thai: 'อร่อย',
-  transliteration: 'à-ròoi',
-  english: 'Delicious'
-}, {
-  id: '6',
-  thai: 'น้ำ',
-  transliteration: 'náam',
-  english: 'Water'
-}, {
-  id: '7',
-  thai: 'ข้าว',
-  transliteration: 'kâao',
-  english: 'Rice'
-}, {
-  id: '8',
-  thai: 'บ้าน',
-  transliteration: 'bâan',
-  english: 'House'
-}, {
-  id: '9',
-  thai: 'รถ',
-  transliteration: 'rót',
-  english: 'Car'
-}, {
-  id: '10',
-  thai: 'หนังสือ',
-  transliteration: 'nǎng-sɯ̌ɯ',
-  english: 'Book'
-}];
 export const FlashcardsView: React.FC<FlashcardsViewProps> = ({
   onWordMastered,
   masteredWords
 }) => {
-  const [currentIndex, setCurrentIndex] = useState(0);
   const [isRevealed, setIsRevealed] = useState(false);
   const [isFlipping, setIsFlipping] = useState(false);
-  const currentCard = flashcards[currentIndex];
-  const isCurrentMastered = masteredWords.has(currentCard.id);
+  const [showSettings, setShowSettings] = useState(false);
+  
+  const {
+    currentWord,
+    currentIndex,
+    totalWords,
+    nextWord,
+    markCurrentWordSeen,
+    settings,
+    updateSettings,
+    getProgressStats,
+  } = useWordProgression(masteredWords);
+
+  const currentCard = currentWord;
+  const isCurrentMastered = currentCard ? masteredWords.has(currentCard.id) : false;
+  const progressStats = getProgressStats();
 
   // Reset reveal state when card changes
   useEffect(() => {
     setIsRevealed(false);
-  }, [currentIndex]);
-  const speakThai = () => { try { ensureAudioUnlocked(); speakThaiUtil(currentCard.thai, 0.9); } catch {} };
+  }, [currentCard?.id]);
+  
+  const speakThai = () => { 
+    if (!currentCard) return;
+    try { 
+      ensureAudioUnlocked(); 
+      speakThaiUtil(currentCard.thai, 0.9); 
+    } catch {} 
+  };
   const handleReveal = () => {
     if (!isRevealed) {
       setIsFlipping(true);
@@ -89,13 +53,19 @@ export const FlashcardsView: React.FC<FlashcardsViewProps> = ({
     }
   };
   const handleKnowIt = () => {
+    if (!currentCard) return;
     if (!isCurrentMastered) {
       onWordMastered(currentCard.id);
     }
-    nextCard();
+    markCurrentWordSeen();
+    nextWord();
   };
-  const nextCard = () => {
-    setCurrentIndex(prev => (prev + 1) % flashcards.length);
+  
+  const handleNextCard = () => {
+    if (currentCard) {
+      markCurrentWordSeen();
+    }
+    nextWord();
   };
   const handleKeyPress = (e: KeyboardEvent) => {
     if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
@@ -114,7 +84,7 @@ export const FlashcardsView: React.FC<FlashcardsViewProps> = ({
       case 'ArrowRight':
       case 'n':
         e.preventDefault();
-        nextCard();
+        handleNextCard();
         break;
       case 's':
         e.preventDefault();
@@ -125,24 +95,82 @@ export const FlashcardsView: React.FC<FlashcardsViewProps> = ({
   useEffect(() => {
     window.addEventListener('keydown', handleKeyPress);
     return () => window.removeEventListener('keydown', handleKeyPress);
-  }, [isRevealed, currentCard.id, isCurrentMastered]);
+  }, [isRevealed, currentCard?.id, isCurrentMastered]);
+  if (!currentCard) {
+    return <div className="max-w-2xl mx-auto text-center py-16">
+      <h2 className="text-2xl font-bold mb-4">No words available</h2>
+      <p className="text-slate-400">Please check your vocabulary settings.</p>
+    </div>;
+  }
+
   return <div className="max-w-2xl mx-auto">
       {/* Progress indicator */}
       <div className="mb-8">
         <div className="flex justify-between items-center mb-2">
           <span className="text-sm text-slate-400">
-            Card {currentIndex + 1} of {flashcards.length}
+            Word {currentIndex + 1} of {totalWords}
           </span>
-          <span className="text-sm text-slate-400">
-            {Array.from(masteredWords).length} mastered
-          </span>
+          <div className="flex items-center gap-4">
+            <span className="text-sm text-slate-400">
+              {progressStats.masteredWords} mastered
+            </span>
+            <button
+              onClick={() => setShowSettings(!showSettings)}
+              className="text-slate-400 hover:text-white transition-colors"
+              aria-label="Settings"
+            >
+              <Settings className="w-4 h-4" />
+            </button>
+          </div>
         </div>
         <div className="w-full bg-slate-800 rounded-full h-2">
           <div className="bg-blue-600 h-2 rounded-full transition-all duration-300" style={{
-          width: `${(currentIndex + 1) / flashcards.length * 100}%`
+          width: `${progressStats.progressPercentage}%`
         }} />
         </div>
+        <div className="flex justify-between text-xs text-slate-500 mt-1">
+          <span>{progressStats.seenWords} seen</span>
+          <span>{progressStats.unseenWords} remaining</span>
+        </div>
       </div>
+
+      {/* Settings Panel */}
+      {showSettings && (
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mb-6 p-4 bg-slate-800/50 rounded-lg border border-slate-700"
+        >
+          <h3 className="text-lg font-semibold mb-3">Vocabulary Settings</h3>
+          
+          <div className="space-y-3">
+            <div>
+              <label className="block text-sm font-medium mb-1">Difficulty Level</label>
+              <select
+                value={settings.difficulty}
+                onChange={(e) => updateSettings({ difficulty: e.target.value as any })}
+                className="w-full p-2 bg-slate-700 border border-slate-600 rounded text-white"
+              >
+                <option value="all">All Levels</option>
+                <option value="beginner">Beginner</option>
+                <option value="intermediate">Intermediate</option>
+                <option value="advanced">Advanced</option>
+              </select>
+            </div>
+            
+            <div className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                id="shuffle"
+                checked={settings.shuffleWords}
+                onChange={(e) => updateSettings({ shuffleWords: e.target.checked })}
+                className="rounded"
+              />
+              <label htmlFor="shuffle" className="text-sm">Shuffle words</label>
+            </div>
+          </div>
+        </motion.div>
+      )}
 
       {/* Flashcard */}
       <div className="relative mb-8 no-select">
@@ -217,7 +245,7 @@ export const FlashcardsView: React.FC<FlashcardsViewProps> = ({
             <span className="text-xs opacity-75 hidden sm:inline">(Space)</span>
           </button>}
 
-        <button onClick={nextCard} className="flex items-center justify-center gap-2 px-6 py-3 bg-slate-600 hover:bg-slate-700 text-white rounded-lg font-medium transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-slate-400/50 focus:ring-offset-2 focus:ring-offset-slate-900 min-h-[48px]" aria-label="Skip to next card (Press N or Right Arrow)">
+        <button onClick={handleNextCard} className="flex items-center justify-center gap-2 px-6 py-3 bg-slate-600 hover:bg-slate-700 text-white rounded-lg font-medium transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-slate-400/50 focus:ring-offset-2 focus:ring-offset-slate-900 min-h-[48px]" aria-label="Skip to next word (Press N or Right Arrow)">
           <SkipForward className="w-5 h-5" />
           <span>Next</span>
           <span className="text-xs opacity-75 hidden sm:inline">(N)</span>

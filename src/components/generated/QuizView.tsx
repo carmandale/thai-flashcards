@@ -1,10 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Check, X, SkipForward } from 'lucide-react';
+import { useWordProgression } from '@/hooks/useWordProgression';
+import { vocabulary, VocabularyWord } from '@/data/vocabulary';
+
 interface QuizViewProps {
   onCorrectAnswer: () => void;
   masteredWords: Set<string>;
 }
+
 interface QuizQuestion {
   id: string;
   thai: string;
@@ -12,50 +16,59 @@ interface QuizQuestion {
   correct: string;
   options: string[];
 }
-const quizQuestions: QuizQuestion[] = [{
-  id: '1',
-  thai: 'สวัสดี',
-  transliteration: 'sà-wàt-dii',
-  correct: 'Hello',
-  options: ['Hello', 'Goodbye', 'Thank you', 'Sorry']
-}, {
-  id: '2',
-  thai: 'ขอบคุณ',
-  transliteration: 'kɔ̀ɔp-kun',
-  correct: 'Thank you',
-  options: ['Hello', 'Thank you', 'Please', 'Excuse me']
-}, {
-  id: '3',
-  thai: 'อร่อย',
-  transliteration: 'à-ròoi',
-  correct: 'Delicious',
-  options: ['Beautiful', 'Delicious', 'Expensive', 'Hot']
-}, {
-  id: '4',
-  thai: 'น้ำ',
-  transliteration: 'náam',
-  correct: 'Water',
-  options: ['Water', 'Food', 'Tea', 'Coffee']
-}, {
-  id: '5',
-  thai: 'บ้าน',
-  transliteration: 'bâan',
-  correct: 'House',
-  options: ['Car', 'House', 'School', 'Shop']
-}];
+
+// Generate wrong answers from vocabulary
+function generateWrongAnswers(correctWord: VocabularyWord, allWords: VocabularyWord[], count: number = 3): string[] {
+  const wrongAnswers = allWords
+    .filter(word => word.id !== correctWord.id && word.english !== correctWord.english)
+    .map(word => word.english);
+  
+  // Shuffle and take the required count
+  const shuffled = wrongAnswers.sort(() => Math.random() - 0.5);
+  return shuffled.slice(0, count);
+}
+
+// Convert vocabulary word to quiz question
+function createQuizQuestion(word: VocabularyWord, allWords: VocabularyWord[]): QuizQuestion {
+  const wrongAnswers = generateWrongAnswers(word, allWords);
+  const allOptions = [word.english, ...wrongAnswers];
+  
+  // Shuffle options
+  const shuffledOptions = allOptions.sort(() => Math.random() - 0.5);
+  
+  return {
+    id: word.id,
+    thai: word.thai,
+    transliteration: word.transliteration,
+    correct: word.english,
+    options: shuffledOptions,
+  };
+}
 export const QuizView: React.FC<QuizViewProps> = ({
   onCorrectAnswer,
   masteredWords
 }) => {
-  const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
   const [showResult, setShowResult] = useState(false);
   const [score, setScore] = useState(0);
   const [answeredQuestions, setAnsweredQuestions] = useState(0);
-  const currentQuestion = quizQuestions[currentIndex];
-  const isCorrect = selectedAnswer === currentQuestion.correct;
+  
+  const {
+    currentWord,
+    availableWords,
+    nextWord,
+    markCurrentWordSeen,
+  } = useWordProgression(masteredWords);
+
+  // Generate current quiz question
+  const currentQuestion = useMemo(() => {
+    if (!currentWord || availableWords.length < 4) return null;
+    return createQuizQuestion(currentWord, availableWords);
+  }, [currentWord, availableWords]);
+
+  const isCorrect = selectedAnswer === currentQuestion?.correct;
   const handleAnswerSelect = (answer: string) => {
-    if (showResult) return;
+    if (showResult || !currentQuestion) return;
     setSelectedAnswer(answer);
     setShowResult(true);
     setAnsweredQuestions(prev => prev + 1);
@@ -64,10 +77,14 @@ export const QuizView: React.FC<QuizViewProps> = ({
       onCorrectAnswer();
     }
   };
+  
   const nextQuestion = () => {
     setSelectedAnswer(null);
     setShowResult(false);
-    setCurrentIndex(prev => (prev + 1) % quizQuestions.length);
+    if (currentWord) {
+      markCurrentWordSeen();
+    }
+    nextWord();
   };
   const handleKeyPress = (e: KeyboardEvent) => {
     if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
@@ -83,7 +100,7 @@ export const QuizView: React.FC<QuizViewProps> = ({
 
     // Number keys for selecting answers
     const num = parseInt(e.key);
-    if (num >= 1 && num <= 4) {
+    if (num >= 1 && num <= 4 && currentQuestion) {
       e.preventDefault();
       handleAnswerSelect(currentQuestion.options[num - 1]);
     }
@@ -91,8 +108,16 @@ export const QuizView: React.FC<QuizViewProps> = ({
   useEffect(() => {
     window.addEventListener('keydown', handleKeyPress);
     return () => window.removeEventListener('keydown', handleKeyPress);
-  }, [showResult, currentQuestion.options]);
+  }, [showResult, currentQuestion?.options]);
   const accuracy = answeredQuestions > 0 ? Math.round(score / answeredQuestions * 100) : 0;
+  
+  if (!currentQuestion) {
+    return <div className="max-w-2xl mx-auto text-center py-16">
+      <h2 className="text-2xl font-bold mb-4">No quiz questions available</h2>
+      <p className="text-slate-400">Need at least 4 words to generate quiz questions.</p>
+    </div>;
+  }
+
   return <div className="max-w-2xl mx-auto">
       {/* Stats */}
       <div className="mb-8 grid grid-cols-3 gap-4">
