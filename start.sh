@@ -77,7 +77,11 @@ done
 URL="http://$HOST:$PORT/"
 echo "🟢 Preview: $URL"
 
-npm run preview --silent -- --host "$HOST" --port "$PORT" &
+if [ "$USE_NPM" = true ]; then
+  npm run preview --silent -- --host "$HOST" --port "$PORT" &
+else
+  yarn preview --silent -- --host "$HOST" --port "$PORT" &
+fi
 SERVER_PID=$!
 cleanup(){ echo; echo "🔴 Stopping preview (PID $SERVER_PID) ..."; kill "$SERVER_PID" >/dev/null 2>&1 || true; }
 trap cleanup INT TERM EXIT
