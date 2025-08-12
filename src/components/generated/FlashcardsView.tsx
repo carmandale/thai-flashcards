@@ -37,32 +37,11 @@ export const FlashcardsView: React.FC<FlashcardsViewProps> = ({
   }, [currentCard?.id]);
   
   const speakThai = () => { 
-    if (!currentCard || isPlaying) return;
+    if (!currentCard) return;
     try { 
-      ensureAudioUnlocked();
-      
-      // Debug: check available voices
-      const voices = window.speechSynthesis.getVoices();
-      const thaiVoices = voices.filter(v => v.lang?.toLowerCase().startsWith('th'));
-      setDebugInfo(`Voices: ${voices.length} total, ${thaiVoices.length} Thai. Attempting TTS...`);
-      
-      speakThaiUtil(
-        currentCard.thai, 
-        0.9,
-        () => {
-          setDebugInfo('✅ TTS Started!');
-          setIsPlaying(true);
-        },   // onStart
-        () => {
-          setDebugInfo('TTS Ended');
-          setIsPlaying(false);
-          setTimeout(() => setDebugInfo(''), 2000); // Clear after 2s
-        }   // onEnd
-      );
-    } catch (error) {
-      setDebugInfo(`❌ Error: ${error instanceof Error ? error.message : String(error)}`);
-      setIsPlaying(false);
-    } 
+      ensureAudioUnlocked(); 
+      speakThaiUtil(currentCard.thai, 0.9); 
+    } catch {} 
   };
   const handleReveal = () => {
     if (!isRevealed) {
