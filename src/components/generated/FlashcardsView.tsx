@@ -104,15 +104,20 @@ export const FlashcardsView: React.FC<FlashcardsViewProps> = ({
   }
 
   return <div className="max-w-2xl mx-auto">
-      {/* Progress indicator */}
-      <div className="mb-8">
-        <div className="flex justify-between items-center mb-2">
-          <span className="text-sm text-slate-400">
-            Word {currentIndex + 1} of {totalWords}
-          </span>
+      {/* Progress indicator with fun elements */}
+      <div className="mb-6">
+        <div className="flex justify-between items-center mb-3">
+          <div className="flex items-center gap-2">
+            <span className="text-lg font-bold text-white">
+              Word {currentIndex + 1} of {totalWords}
+            </span>
+            {progressStats.seenWords > 0 && progressStats.seenWords % 10 === 0 && (
+              <span className="text-xl animate-bounce">🎉</span>
+            )}
+          </div>
           <div className="flex items-center gap-4">
-            <span className="text-sm text-slate-400">
-              {progressStats.masteredWords} mastered
+            <span className="text-sm text-green-400 flex items-center gap-1">
+              <span>✅</span> {progressStats.masteredWords} mastered
             </span>
             <button
               onClick={() => setShowSettings(!showSettings)}
@@ -123,10 +128,18 @@ export const FlashcardsView: React.FC<FlashcardsViewProps> = ({
             </button>
           </div>
         </div>
-        <div className="w-full bg-slate-800 rounded-full h-2">
-          <div className="bg-blue-600 h-2 rounded-full transition-all duration-300" style={{
+        <div className="flex items-center gap-3 text-sm text-slate-400 mb-2">
+          <span>{progressStats.seenWords} seen</span>
+          <span>•</span>
+          <span className="text-slate-300">{progressStats.remainingWords} remaining</span>
+        </div>
+        <div className="w-full bg-slate-800 rounded-full h-3 relative overflow-hidden">
+          <div className="bg-gradient-to-r from-blue-500 to-purple-500 h-3 rounded-full transition-all duration-300" style={{
           width: `${progressStats.progressPercentage}%`
         }} />
+          {progressStats.progressPercentage > 0 && (
+            <div className="absolute top-0 left-0 h-full w-full bg-white/10 animate-pulse" />
+          )}
         </div>
         <div className="flex justify-between text-xs text-slate-500 mt-1">
           <span>{progressStats.seenWords} seen</span>
