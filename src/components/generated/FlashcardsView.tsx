@@ -73,6 +73,7 @@ export const FlashcardsView: React.FC<FlashcardsViewProps> = ({
     if (currentCard) {
       markCurrentWordSeen();
     }
+    setIsRevealed(false); // Ensure reveal state is reset
     nextWord();
   };
   const handleKeyPress = (e: KeyboardEvent) => {
