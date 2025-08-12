@@ -52,6 +52,10 @@ function iosResumeWorkaround() {
 
 export function speakThai(text: string, rate = 0.9) {
   if (typeof window === 'undefined' || !('speechSynthesis' in window)) return;
+  
+  // Ensure audio is unlocked on mobile (critical for iOS)
+  ensureAudioUnlocked();
+  
   const synth = window.speechSynthesis;
   iosResumeWorkaround();
   // Attempt immediate speak using currently available voices to preserve user gesture
