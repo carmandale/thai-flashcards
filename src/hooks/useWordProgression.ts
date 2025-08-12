@@ -114,7 +114,7 @@ export function useWordProgression(masteredWords: Set<string>) {
         // If we have loaded state and the word count matches, use it
         ...(loadedState && loadedState.totalWords === availableWords.length ? loadedState : {
           currentIndex: 0,
-          seenWords: new Set(),
+          seenWords: new Set<string>(),
           completedCycle: false,
         }),
       };
