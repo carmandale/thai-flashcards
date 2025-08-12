@@ -247,7 +247,13 @@ export const FlashcardsView: React.FC<FlashcardsViewProps> = ({
 
       {/* Action buttons */}
       <div className="flex flex-col sm:flex-row gap-3 justify-center">
-        <button onClick={speakThai} className="flex items-center justify-center gap-2 px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-medium transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-purple-400/50 focus:ring-offset-2 focus:ring-offset-slate-900 min-h-[48px]" aria-label="Hear Thai pronunciation (Press S)">
+        <button 
+          onClick={() => handleButtonPress('speak', speakThai)} 
+          className={`flex items-center justify-center gap-2 px-6 py-3 bg-purple-600 hover:bg-purple-700 active:bg-purple-800 text-white rounded-lg font-medium transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-purple-400/50 focus:ring-offset-2 focus:ring-offset-slate-900 min-h-[48px] ${
+            pressedButton === 'speak' ? 'scale-95 shadow-sm' : 'scale-100 shadow-md'
+          } transform`} 
+          aria-label="Hear Thai pronunciation (Press S)"
+        >
           <Volume2 className="w-5 h-5" />
           <span>Hear Thai</span>
           <span className="text-xs opacity-75 hidden sm:inline">(S)</span>
