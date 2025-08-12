@@ -98,8 +98,8 @@ export function useWordProgression(masteredWords: Set<string>) {
           const parsed = JSON.parse(savedState);
           loadedState = {
             ...parsed,
-            seenWords: new Set(parsed.seenWords || []),
-            masteredWords: new Set(parsed.masteredWords || []),
+            seenWords: new Set<string>(parsed.seenWords || []),
+            masteredWords: new Set<string>(parsed.masteredWords || []),
           };
         } catch (error) {
           console.error('Failed to load word progression state:', error);
