@@ -38,11 +38,17 @@ export const FlashcardsView: React.FC<FlashcardsViewProps> = ({
   }, [currentCard?.id]);
   
   const speakThai = () => { 
-    if (!currentCard) return;
+    if (!currentCard || isPlaying) return;
     try { 
-      ensureAudioUnlocked(); 
-      speakThaiUtil(currentCard.thai, 0.9); 
-    } catch {} 
+      ensureAudioUnlocked();
+      setIsPlaying(true);
+      speakThaiUtil(currentCard.thai, 0.9);
+      // Estimate duration based on text length (rough approximation)
+      const duration = Math.max(1000, currentCard.thai.length * 200);
+      setTimeout(() => setIsPlaying(false), duration);
+    } catch {
+      setIsPlaying(false);
+    } 
   };
   const handleReveal = () => {
     if (!isRevealed) {
