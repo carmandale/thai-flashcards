@@ -50,7 +50,7 @@ function iosResumeWorkaround() {
   window.setTimeout(() => window.clearInterval(id), 2000);
 }
 
-export function speakThai(text: string, rate = 0.9) {
+export function speakThai(text: string, rate = 0.9, onStart?: () => void, onEnd?: () => void) {
   if (typeof window === 'undefined' || !('speechSynthesis' in window)) return;
   
   // Ensure audio is unlocked on mobile (critical for iOS)
@@ -58,18 +58,28 @@ export function speakThai(text: string, rate = 0.9) {
   
   const synth = window.speechSynthesis;
   iosResumeWorkaround();
+  
   // Attempt immediate speak using currently available voices to preserve user gesture
   const immediate = synth.getVoices();
   const immediateVoice = pickThaiVoice(immediate);
   try { synth.cancel(); } catch {}
+  
   const utter = new SpeechSynthesisUtterance(text);
   if (immediateVoice) utter.voice = immediateVoice;
   utter.lang = immediateVoice?.lang || 'th-TH';
   utter.rate = rate;
   utter.volume = 1;
+  
   let started = false;
-  utter.onstart = () => { started = true; };
+  utter.onstart = () => { 
+    started = true;
+    onStart?.();
+  };
+  utter.onend = () => onEnd?.();
+  utter.onerror = () => onEnd?.();
+  
   synth.speak(utter);
+  
   // If iOS ignored the first speak because voices weren't ready, retry shortly with loaded voices
   setTimeout(() => {
     if (started) return;
@@ -81,9 +91,17 @@ export function speakThai(text: string, rate = 0.9) {
       u.lang = voice?.lang || 'th-TH';
       u.rate = rate;
       u.volume = 1;
+      u.onstart = () => onStart?.();
+      u.onend = () => onEnd?.();
+      u.onerror = () => onEnd?.();
       synth.speak(u);
-    }).catch(() => {});
+    }).catch(() => onEnd?.());
   }, 350);
+  
+  // Fallback timeout in case events don't fire
+  setTimeout(() => {
+    if (!started) onEnd?.();
+  }, 1000);
 }
 
 export function isTTSSupported() {
