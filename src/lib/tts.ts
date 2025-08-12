@@ -1,3 +1,5 @@
+import { ensureAudioUnlocked } from './audioUnlock';
+
 let voicesCache: SpeechSynthesisVoice[] | null = null;
 let voicesLoaded = false;
 
