@@ -62,7 +62,7 @@ export const FlashcardsView: React.FC<FlashcardsViewProps> = ({
         }   // onEnd
       );
     } catch (error) {
-      setDebugInfo(`❌ Error: ${error.message}`);
+      setDebugInfo(`❌ Error: ${error instanceof Error ? error.message : String(error)}`);
       setIsPlaying(false);
     } 
   };
