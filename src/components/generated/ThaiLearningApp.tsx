@@ -39,30 +39,51 @@ export const ThaiLearningApp: React.FC = () => {
   const progress = currentUser === 'user1' ? user1Progress : user2Progress;
   const setProgress = currentUser === 'user1' ? setUser1Progress : setUser2Progress;
 
-  // Load progress from localStorage
+  // Load progress from localStorage for both users
   useEffect(() => {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved) {
+    // Load user1 progress
+    const saved1 = localStorage.getItem(`${STORAGE_KEY_PREFIX}-user1`);
+    if (saved1) {
       try {
-        const parsed = JSON.parse(saved);
-        setProgress({
+        const parsed = JSON.parse(saved1);
+        setUser1Progress({
           ...parsed,
           masteredWords: new Set(parsed.masteredWords || [])
         });
       } catch (error) {
-        console.error('Failed to load progress:', error);
+        console.error('Failed to load user1 progress:', error);
+      }
+    }
+    
+    // Load user2 progress
+    const saved2 = localStorage.getItem(`${STORAGE_KEY_PREFIX}-user2`);
+    if (saved2) {
+      try {
+        const parsed = JSON.parse(saved2);
+        setUser2Progress({
+          ...parsed,
+          masteredWords: new Set(parsed.masteredWords || [])
+        });
+      } catch (error) {
+        console.error('Failed to load user2 progress:', error);
       }
     }
   }, []);
 
   // Save progress to localStorage
   useEffect(() => {
-    const toSave = {
-      ...progress,
-      masteredWords: Array.from(progress.masteredWords)
+    const toSave1 = {
+      ...user1Progress,
+      masteredWords: Array.from(user1Progress.masteredWords)
     };
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(toSave));
-  }, [progress]);
+    localStorage.setItem(`${STORAGE_KEY_PREFIX}-user1`, JSON.stringify(toSave1));
+    
+    const toSave2 = {
+      ...user2Progress,
+      masteredWords: Array.from(user2Progress.masteredWords)
+    };
+    localStorage.setItem(`${STORAGE_KEY_PREFIX}-user2`, JSON.stringify(toSave2));
+  }, [user1Progress, user2Progress]);
 
   // Check for new day and update streak
   useEffect(() => {
@@ -133,9 +154,10 @@ export const ThaiLearningApp: React.FC = () => {
     });
   };
   const resetProgress = () => {
-    if (window.confirm('Are you sure you want to reset all progress? This cannot be undone.')) {
+    const userName = currentUser === 'user1' ? 'Dale' : 'Wife';
+    if (window.confirm(`Are you sure you want to reset ${userName}'s progress? This cannot be undone.`)) {
       setProgress(defaultProgress);
-      localStorage.removeItem(STORAGE_KEY);
+      localStorage.removeItem(`${STORAGE_KEY_PREFIX}-${currentUser}`);
     }
   };
   const markWordMastered = (word: string) => {
@@ -156,6 +178,18 @@ export const ThaiLearningApp: React.FC = () => {
 
       <div className="relative z-10 flex flex-col min-h-screen">
         <Header activeTab={activeTab} onTabChange={setActiveTab} progress={progress} onReset={resetProgress} />
+        
+        {/* User Selector */}
+        <div className="px-4 py-2 bg-slate-900/50 border-b border-slate-700/50">
+          <div className="max-w-4xl mx-auto flex justify-center">
+            <UserSelector 
+              currentUser={currentUser}
+              onUserChange={setCurrentUser}
+              user1Name="Dale"
+              user2Name="Wife"
+            />
+          </div>
+        </div>
 
         <main className="flex-1 px-4 py-6 md:px-6 lg:px-8">
           <div className="max-w-4xl mx-auto">
