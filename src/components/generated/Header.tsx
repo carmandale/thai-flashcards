@@ -16,10 +16,6 @@ const tabs = [{
   id: 'quiz' as Tab,
   label: 'Quiz',
   hotkey: '2'
-}, {
-  id: 'game' as Tab,
-  label: 'Mouse & Cheese',
-  hotkey: '3'
 }] as any[];
 export const Header: React.FC<HeaderProps> = ({
   activeTab,
