@@ -180,8 +180,8 @@ export const ThaiLearningApp: React.FC = () => {
       <div className="relative z-10 flex flex-col min-h-screen">
         <Header activeTab={activeTab} onTabChange={setActiveTab} progress={progress} onReset={resetProgress} />
 
-        <main className="flex-1 px-4 py-6 md:px-6 lg:px-8">
-          <div className="max-w-4xl mx-auto">
+        <main className="flex-1 px-4 py-4 overflow-hidden">
+          <div className="h-full max-w-4xl mx-auto">
             <AnimatePresence mode="wait">
               <motion.div key={activeTab} initial={{
               opacity: 0,
